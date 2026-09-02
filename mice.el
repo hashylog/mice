@@ -14,7 +14,7 @@
 (defcustom my/global-keybindings
   '(("C-s" . save-buffer)
     ("C-S-s" . write-file)
-    ("C-f" . consult-line)
+    ("C-f" . isearch-forward)
     ("C-S-f" . consult-ripgrep)
     ("M-s l" . consult-line)
     ("M-s r" . consult-ripgrep)
