@@ -119,7 +119,10 @@
 
 ;;; Core behavior
 
-(setq initial-major-mode 'fundamental-mode
+(setq inhibit-startup-screen t
+      inhibit-startup-message t
+      initial-scratch-message nil
+      initial-major-mode 'fundamental-mode
       ring-bell-function #'ignore
       confirm-kill-emacs #'y-or-n-p
       sentence-end-double-space nil
