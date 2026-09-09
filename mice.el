@@ -15,10 +15,10 @@
   '(("C-s" . save-buffer)
     ("C-S-s" . write-file)
     ("C-f" . isearch-forward)
-    ("C-S-f" . consult-ripgrep)
-    ("M-s l" . consult-line)
-    ("M-s r" . consult-ripgrep)
-    ("M-y" . consult-yank-pop)
+    ("C-S-f" . project-find-regexp)
+    ("M-s l" . occur)
+    ("M-s r" . project-find-regexp)
+    ("M-y" . yank-pop)
     ("C-z" . undo-only)
     ("C-y" . undo-redo)
     ("C-d" . my/duplicate-line-or-region)
@@ -46,8 +46,6 @@
     ("<mouse-5>" . my/mouse-wheel-down)
     ("M-<up>" . my/move-line-up)
     ("M-<down>" . my/move-line-down)
-    ("M-S-<up>" . mc/mark-previous-like-this)
-    ("M-S-<down>" . mc/mark-next-like-this)
     ("<f1>" . help-command)
     ("<f12>" . xref-find-definitions)
     ("S-<f12>" . xref-find-references))
@@ -72,51 +70,6 @@
   "Bindings active while an incremental search is running."
   :type '(alist :key-type string :value-type function))
 
-;;; Generated state
-
-;; Keep Emacs' generated state out of this file and inside var/.
-(defconst my/cache-directory (expand-file-name "var/" user-emacs-directory))
-(defconst my/package-directory (expand-file-name "elpa/" my/cache-directory))
-(dolist (directory (list my/cache-directory
-                         my/package-directory
-                         (expand-file-name "auto-save/" my/cache-directory)
-                         (expand-file-name "auto-save-list/" my/cache-directory)
-                         (expand-file-name "backups/" my/cache-directory)
-                         (expand-file-name "eln-cache/" my/cache-directory)))
-  (make-directory directory t))
-
-(setq package-user-dir my/package-directory
-      custom-file null-device
-      auto-save-list-file-prefix (expand-file-name "auto-save-list/.saves-" my/cache-directory)
-      auto-save-file-name-transforms `((".*" ,(expand-file-name "auto-save/" my/cache-directory) t))
-      backup-directory-alist `(("." . ,(expand-file-name "backups/" my/cache-directory)))
-      tramp-persistency-file-name (expand-file-name "tramp" my/cache-directory)
-      recentf-save-file (expand-file-name "recentf" my/cache-directory)
-      savehist-file (expand-file-name "savehist" my/cache-directory)
-      bookmark-default-file (expand-file-name "bookmarks" my/cache-directory)
-      project-list-file (expand-file-name "projects" my/cache-directory)
-      mc/list-file (expand-file-name "multiple-cursors.el" my/cache-directory)
-      url-configuration-directory (expand-file-name "url/" my/cache-directory))
-
-(when (boundp 'native-comp-eln-load-path)
-  (let ((cache (expand-file-name "eln-cache/" my/cache-directory))
-        (default-cache (expand-file-name "eln-cache/" user-emacs-directory)))
-    (setq native-comp-eln-load-path
-          (cons cache (delete default-cache native-comp-eln-load-path)))))
-
-;;; Packages
-
-(require 'package)
-(setq package-archives '(("gnu" . "https://elpa.gnu.org/packages/")
-                         ("nongnu" . "https://elpa.nongnu.org/nongnu/")
-                         ("melpa" . "https://melpa.org/packages/"))
-      package-archive-priorities '(("gnu" . 30) ("nongnu" . 20) ("melpa" . 10)))
-(package-initialize)
-
-(require 'use-package)
-(setq use-package-always-ensure t
-      use-package-expand-minimally t)
-
 ;;; Core behavior
 
 (setq inhibit-startup-screen t
@@ -136,6 +89,7 @@
       read-process-output-max (* 1024 1024)
       kill-do-not-save-duplicates t
       delete-by-moving-to-trash t
+      make-backup-files nil
       uniquify-buffer-name-style 'forward
       vc-follow-symlinks t
       compilation-scroll-output 'first-error)
@@ -160,31 +114,6 @@
 (setq shift-select-mode t)
 
 (add-hook 'before-save-hook #'delete-trailing-whitespace)
-
-;;; Completion and navigation
-
-(use-package orderless
-  :init
-  (setq completion-styles '(orderless basic)
-        completion-category-defaults nil
-        completion-category-overrides '((file (styles partial-completion)))))
-
-(use-package consult)
-
-(use-package dtrt-indent
-  :init
-  (setq dtrt-indent-lighter nil
-        dtrt-indent-verbosity 0
-        dtrt-indent-run-after-smie t)
-  :config
-  (dtrt-indent-global-mode 1))
-
-(use-package multiple-cursors)
-
-(use-package clipetty
-  :if (not (display-graphic-p))
-  :config
-  (global-clipetty-mode 1))
 
 ;;; Editor functions
 
