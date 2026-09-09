@@ -104,8 +104,6 @@
 (electric-pair-mode 1)
 (delete-selection-mode 1)
 (save-place-mode -1)
-(savehist-mode 1)
-(recentf-mode 1)
 (when (fboundp 'xterm-mouse-mode)
   (xterm-mouse-mode 1))
 (when (fboundp 'mouse-wheel-mode)
