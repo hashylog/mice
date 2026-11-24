@@ -29,19 +29,79 @@ indentation rules, so editing behaves the same in every file type.
 Special buffers (help, dired, ...) and the minibuffer are left untouched.
 Modes listed in `mice-preserved-modes` are left untouched as well.
 
-### Indentation
+### Keybindings
 
-| Key         | Behavior                                                        |
-|-------------|-----------------------------------------------------------------|
-| `TAB`       | Indent the selection, or insert up to the next tab stop         |
-| `S-TAB`     | Remove one indentation level from the selection or the line     |
-| `RET`       | New line keeping the current indentation; clears blank lines    |
-| `BACKSPACE` | Delete the selection, a whole indentation level, or a character |
+MICE keys take priority over every other keymap, including the `C-x` and `C-c`
+prefixes. Each key is active in a scope; outside it, the key keeps its usual
+Emacs meaning:
+
+- **edit**: editable buffers managed by MICE
+- **view**: buffers managed by MICE, including read-only ones
+- **copy**: like view, plus any buffer with an active selection
+- **global**: every buffer except the minibuffer
+
+Without a selection, copy and cut act on the whole line, and consecutive line
+cuts accumulate. Typing replaces the selection.
+
+#### Editing (edit)
+
+| Key                                  | Action                                                          |
+|--------------------------------------|-----------------------------------------------------------------|
+| `TAB`                                | Indent the selection, or insert up to the next tab stop         |
+| `S-TAB`                              | Remove one indentation level from the selection or the line     |
+| `RET`                                | New line keeping the current indentation; clears blank lines    |
+| `BACKSPACE`, `C-h`                   | Delete the selection, a whole indentation level, or a character |
+| `C-BACKSPACE`, `M-BACKSPACE`, `C-M-h` | Delete the previous word                                        |
+| `C-DELETE`                           | Delete the next word                                            |
+| `C-x` / `C-k`                        | Cut selection or line / cut line                                |
+| `C-v`                                | Paste                                                           |
+| `C-z` / `C-y`                        | Undo / redo                                                     |
+| `C-d`                                | Duplicate selection or line                                     |
+| `M-UP` / `M-DOWN`                    | Move selected lines or the line                                 |
+| `C-/`, `M-/`                         | Toggle comments                                                 |
+
+#### Movement and selection (view)
+
+Hold `SHIFT` with any movement key to extend the selection. Plain movement
+collapses the selection.
+
+| Key                          | Action                                         |
+|------------------------------|------------------------------------------------|
+| Arrows                       | Move by character or line                      |
+| `C-LEFT` / `C-RIGHT`         | Move by word, using Micro's word boundaries    |
+| `HOME`, `M-LEFT`             | Toggle first non-blank character / line start  |
+| `END`, `M-RIGHT`             | End of line                                    |
+| `C-UP` / `C-DOWN`, `C-HOME` / `C-END` | Start / end of buffer                 |
+| `PAGEUP` / `PAGEDOWN`        | Move by page                                   |
+| `C-a`                        | Select all                                     |
+| `C-c`                        | Copy selection or line (copy scope)            |
+| `C-s`                        | Save                                           |
+| `C-u` / `C-j`                | Record macro / play macro                      |
+
+#### Editor (global)
+
+| Key           | Action                                              |
+|---------------|-----------------------------------------------------|
+| `C-f`         | Find (regexp); the match is selected on exit        |
+| `C-n` / `C-p` | Select next / previous match, wrapping around       |
+| `C-o`         | Open file                                           |
+| `C-q`         | Close buffer; quits when no other file is open      |
+| `M-q`         | Quit                                                |
+| `C-e`         | Run command                                         |
+| `C-l`         | Go to line                                          |
+| `C-w`         | Next window                                         |
+| `C-r`         | Toggle line numbers                                 |
+
+While finding, `UP` / `DOWN` and `C-p` / `C-n` move between matches and `C-v`
+pastes into the search.
+
+### Indentation
 
 Width and style come from the standard `tab-width` and `indent-tabs-mode`
 variables.
 
-Disabling `mice-mode` gives every buffer back to its major mode.
+Disabling `mice-mode` gives every buffer back to its major mode and restores
+the previous state of `delete-selection-mode` and the search keys.
 
 ## Development
 
