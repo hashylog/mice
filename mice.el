@@ -19,28 +19,14 @@
   :group 'emulations
   :prefix "mice-")
 
-(require 'mice-indent)
-(require 'mice-modes)
-
-(defun mice--editing-filter (command)
-  "Return COMMAND when the current buffer is an editable managed buffer."
-  (and mice--managed (not buffer-read-only) command))
-
-(defun mice--editing-binding (command)
-  "Return a binding for COMMAND active only in editable managed buffers."
-  `(menu-item "" ,command :filter mice--editing-filter))
-
-(defvar mice-mode-map
-  (let ((map (make-sparse-keymap)))
-    (keymap-set map "TAB" (mice--editing-binding #'mice-insert-tab))
-    (keymap-set map "<backtab>" (mice--editing-binding #'mice-outdent))
-    (keymap-set map "RET" (mice--editing-binding #'mice-newline))
-    (keymap-set map "DEL" (mice--editing-binding #'mice-backspace))
-    map)
-  "Keymap of `mice-mode', taking priority over every other keymap.")
+(require 'delsel)
+(require 'mice-keys)
 
 (defvar mice--emulation-alist `((mice-mode . ,mice-mode-map))
   "Entry for `emulation-mode-map-alists'.")
+
+(defvar mice--saved-delete-selection-mode nil
+  "State of `delete-selection-mode' before `mice-mode' was enabled.")
 
 ;;;###autoload
 (define-minor-mode mice-mode
@@ -49,10 +35,18 @@
   :group 'mice
   (if mice-mode
       (progn
-        (add-to-list 'emulation-mode-map-alists 'mice--emulation-alist)
+        (unless (memq 'mice--emulation-alist emulation-mode-map-alists)
+          (setq mice--saved-delete-selection-mode delete-selection-mode)
+          (push 'mice--emulation-alist emulation-mode-map-alists))
+        (delete-selection-mode 1)
+        (mice-search-enable)
         (mice-modes-enable))
-    (setq emulation-mode-map-alists
-          (delq 'mice--emulation-alist emulation-mode-map-alists))
+    (when (memq 'mice--emulation-alist emulation-mode-map-alists)
+      (setq emulation-mode-map-alists
+            (delq 'mice--emulation-alist emulation-mode-map-alists))
+      (unless mice--saved-delete-selection-mode
+        (delete-selection-mode -1)))
+    (mice-search-disable)
     (mice-modes-disable)))
 
 (provide 'mice)
