@@ -19,6 +19,8 @@
 (require 'mice-edit)
 (require 'mice-search)
 (require 'mice-commands)
+(require 'mice-clipboard)
+(require 'mice-mouse)
 
 (defconst mice-keys--bindings
   '((edit "TAB" mice-insert-tab)
@@ -41,6 +43,7 @@
     (edit "C-/" mice-comment)
     (edit "C-_" mice-comment)
     (edit "M-/" mice-comment)
+    (edit "<xterm-paste>" mice-terminal-paste)
 
     (view "<left>" mice-left)
     (view "<right>" mice-right)
@@ -90,7 +93,11 @@
     (global "C-p" mice-find-previous)
     (global "C-l" goto-line)
     (global "C-w" other-window)
-    (global "C-r" mice-toggle-ruler))
+    (global "C-r" mice-toggle-ruler)
+    (global "<wheel-up>" mice-mouse-scroll-up)
+    (global "<wheel-down>" mice-mouse-scroll-down)
+    (global "<mouse-4>" mice-mouse-scroll-up)
+    (global "<mouse-5>" mice-mouse-scroll-down))
   "Entries (SCOPE KEY COMMAND) defining `mice-mode-map'.")
 
 (defun mice-keys--edit-filter (command)

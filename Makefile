@@ -2,7 +2,8 @@ EMACS ?= emacs
 BATCH = $(EMACS) -Q --batch -L .
 
 SOURCES = mice-indent.el mice-modes.el mice-motion.el mice-edit.el \
-	mice-search.el mice-commands.el mice-keys.el mice.el
+	mice-search.el mice-commands.el mice-clipboard.el mice-mouse.el \
+	mice-keys.el mice.el
 
 .PHONY: all compile test clean
 

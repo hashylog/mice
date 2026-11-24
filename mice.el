@@ -40,6 +40,8 @@
           (push 'mice--emulation-alist emulation-mode-map-alists))
         (delete-selection-mode 1)
         (mice-search-enable)
+        (mice-clipboard-enable)
+        (mice-mouse-enable)
         (mice-modes-enable))
     (when (memq 'mice--emulation-alist emulation-mode-map-alists)
       (setq emulation-mode-map-alists
@@ -47,6 +49,8 @@
       (unless mice--saved-delete-selection-mode
         (delete-selection-mode -1)))
     (mice-search-disable)
+    (mice-clipboard-disable)
+    (mice-mouse-disable)
     (mice-modes-disable)))
 
 (provide 'mice)
